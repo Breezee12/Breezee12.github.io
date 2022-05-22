@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="引入卷积神经网络和常规神经网络非常相似：它们都是由神经元组成，神经元中有具有学习能力的权重和偏差。每个神经元都得到一些输入数据，不同特征有不同权重，进行内积运算后再进行激活函数运算再输出。整个网络依旧是一个可导的评分函数：该函数的输入是原始的图像像素，输出是不同类别的评分。在最后一层（往往是全连接层），网络依旧有一个 损失函数（比如SVM或Softmax），并且在神经网络中我们实现的各种技巧和要点">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://example.com/2022/05/22/co/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="引入卷积神经网络和常规神经网络非常相似：它们都是由神经元组成，神经元中有具有学习能力的权重和偏差。每个神经元都得到一些输入数据，不同特征有不同权重，进行内积运算后再进行激活函数运算再输出。整个网络依旧是一个可导的评分函数：该函数的输入是原始的图像像素，输出是不同类别的评分。在最后一层（往往是全连接层），网络依旧有一个 损失函数（比如SVM或Softmax），并且在神经网络中我们实现的各种技巧和要点">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="c:/Users/10205/Desktop/深度学习/cs231n/卷积/全连接.png">
+<meta property="og:image" content="c:/Users/10205/Desktop/深度学习/cs231n/卷积/卷积结构.png">
+<meta property="og:image" content="http://example.com/%E5%85%A8%E8%BF%9E%E6%8E%A5%E4%BE%8B.png">
+<meta property="og:image" content="http://example.com/%E8%BF%90%E7%AE%97.png">
+<meta property="og:image" content="http://example.com/%E5%81%8F%E7%BD%AE.png">
+<meta property="og:image" content="http://example.com/shi.png">
+<meta property="og:image" content="http://example.com/%E4%B8%89.png">
+<meta property="og:image" content="http://example.com/%E5%A4%9A.png">
+<meta property="og:image" content="http://example.com/1.png">
+<meta property="og:image" content="http://example.com/2.png">
+<meta property="og:image" content="http://example.com/3.png">
+<meta property="article:published_time" content="2022-05-22T11:27:17.542Z">
+<meta property="article:modified_time" content="2022-05-22T11:38:35.155Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="c:/Users/10205/Desktop/深度学习/cs231n/卷积/全连接.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-co" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2022/05/22/co/" class="article-date">
+  <time class="dt-published" datetime="2022-05-22T11:27:17.542Z" itemprop="datePublished">2022-05-22</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h1><p>卷积神经网络和常规神经网络非常相似：它们都是由神经元组成，神经元中有具有学习能力的权重和偏差。每个神经元都得到一些输入数据，不同特征有不同权重，进行内积运算后再进行激活函数运算再输出。整个网络依旧是一个可导的评分函数：该函数的输入是原始的图像像素，输出是不同类别的评分。在最后一层（往往是全连接层），网络依旧有一个 损失函数（比如SVM或Softmax），并且在神经网络中我们实现的各种技巧和要点依旧适用于卷积神经网络。<br><img src="C:/Users/10205/Desktop/深度学习/cs231n/卷积/全连接.png"><br>那么有哪些地方变化了呢？之前介绍的神经网络中，相邻层的所有神经元之间都有连接，这称为全连接，CNN 中新出现了卷积层(Convolution 层)和池化层(Pooling 层)。我们向结构中添加了一些特有的性质。这些特有属性使得前向传播函数实现起来更高效，并且大幅度降低了网络中参数的数量。</p>
+<p><img src="C:/Users/10205/Desktop/深度学习/cs231n/卷积/卷积结构.png"></p>
+<h1 id="全连接层存在的问题"><a href="#全连接层存在的问题" class="headerlink" title="全连接层存在的问题"></a>全连接层存在的问题</h1><p>全连接层存在什么问题呢?那就是数据的形状被“忽视”了。比如，输入数据是图像时，图像通常是高、长、通道方向上的3维形状。但是，向全连接层输入时，需要将3维数据拉平为1 维数据。图像是3维形状，这个形状中应该含有重要的空间信息。比如，空间上邻近的像素为相似的值、RBG的各个通道之间分别有密切的关联性、相距较远的像素之间没有什么关联等，3维形状中可能隐藏有值得提取的本质模式。但是，因为全连接层会忽视形状，将全部的输入数据作为相同的神经元(同一维度的神经元)处理，所以无法利用与形状相关的信息。 而卷积层可以保持形状不变。当输入数据是图像时，卷积层会以3维数据的形式接收输入数据，并同样以3维数据的形式输出至下一层。<br><img src="/%E5%85%A8%E8%BF%9E%E6%8E%A5%E4%BE%8B.png"><br>例如输入图像就是3通道、高32像素、长32像素 的(3,32,32)形状，但却被排成1列，以3072个数据的形式输入。若有十个个分类则输出十个分类评分值。</p>
+<h1 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h1><h2 id="卷积运算"><a href="#卷积运算" class="headerlink" title="卷积运算"></a>卷积运算</h2><p>对于输入数据，卷积运算以一定间隔滑动滤波器(卷积核)的窗口并应用。将各个位置上滤波器的元素和输入的对应元素相乘，然后再求和，将这个结果保存到输出的对应位置。此过程在所有位置都进行一遍，就可以得到卷积运算的输出。</p>
+<h1 id=""><a href="#" class="headerlink" title=""></a><center><img src="/%E8%BF%90%E7%AE%97.png"></h1><p>在全连接的神经网络中，除了权重参数，还存在偏置。CNN中，滤波器的参数就对应之前的权重。并且，CNN中也存在偏置，偏置通常只有1个，这个值会被加到应用了滤波器的所有元素上。</p>
+<h1 id="-1"><a href="#-1" class="headerlink" title=""></a><center><img src="/%E5%81%8F%E7%BD%AE.png"></h1><h2 id="填充"><a href="#填充" class="headerlink" title="填充"></a>填充</h2><p>在进行卷积层的处理之前，有时要向输入数据的周围填入固定的数据(比如0等)，对输入数据应用了幅度为1的填充。即用幅度为1像素的0填充周围。</p>
+<p>使用填充主要是为了调整输出的大小。比如，对大小为 (4, 4) 的输入 数据应用 (3, 3) 的滤波器时，输出大小变为 (2, 2)，相当于输出大小 比输入大小缩小了 2 个元素。这在反复进行多次卷积运算的深度网 络中会成为问题。为什么呢?因为如果每次进行卷积运算都会缩小 空间，那么在某个时刻输出大小就有可能变为 1，导致无法再应用 卷积运算。为了避免出现这样的情况，就要使用填充。在刚才的例 子中，将填充的幅度设为 1，那么相对于输入大小 (4, 4)，输出大小 也保持为原来的 (4, 4)。因此，卷积运算就可以在保持空间大小不变 的情况下将数据传给下一层。</p>
+<h2 id="步幅"><a href="#步幅" class="headerlink" title="步幅"></a>步幅</h2><p>应用滤波器的位置间隔称为步幅(stride)。之前的例子中步幅都是 1，如果将步幅设为 2，应用滤波器的窗口的间隔变为2个元素。<br>大步幅后，输出大小会变小。而增大填充后，输出大小会变大。 如果将这样的关系写成算式，会如何呢?接下来，我们看一下对于填充和步 幅，如何计算输出大小。<br>这里，假设输入大小为 (H, W)，滤波器大小为 (FH, FW)，输出大小为 (OH, OW)，填充为 P，步幅为 S。此时，输出大小计算如下。</p>
+<h1 id="-2"><a href="#-2" class="headerlink" title=""></a><center><img src="/shi.png"></h1><h1 id="三维数据的卷积运算"><a href="#三维数据的卷积运算" class="headerlink" title="三维数据的卷积运算"></a>三维数据的卷积运算</h1><h1 id="-3"><a href="#-3" class="headerlink" title=""></a><center><img src="/%E4%B8%89.png"></h1><h1 id="多卷积核"><a href="#多卷积核" class="headerlink" title="多卷积核"></a>多卷积核</h1><h1 id="-4"><a href="#-4" class="headerlink" title=""></a><center><img src="/%E5%A4%9A.png"></h1><h1 id="实际理解"><a href="#实际理解" class="headerlink" title="实际理解"></a>实际理解</h1><p>把原图中符合卷积核特征的特征提取出。</p>
+<h1 id="-5"><a href="#-5" class="headerlink" title=""></a><center><img src="/1.png"></h1><h1 id="-6"><a href="#-6" class="headerlink" title=""></a><center><img src="/2.png"></h1><h1 id="-7"><a href="#-7" class="headerlink" title=""></a><center><img src="/3.png"></h1>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/05/22/co/" data-id="cl3h89ovu0001g4w9dzhveftk" data-title="" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2022/05/22/1/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">1</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">May 2022</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/05/22/co/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2022/05/22/1/">1</a>
+          </li>
+        
+          <li>
+            <a href="/2022/05/22/hello-world/">Hello World</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2022 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
